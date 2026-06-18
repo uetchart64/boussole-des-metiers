@@ -35,7 +35,8 @@
       // dérivés (remplis par calculer(), en fin de paquet) :
       scores: null,                // INTERNE — jamais affiché
       universProfil: null,
-      metiers: null
+      metiers: null,
+      metiersSupprimes: null       // INTERNE — métiers retirés car leur image a été rejetée
     };
   }
 
@@ -47,6 +48,7 @@
     etat.scores = null;
     etat.universProfil = null;
     etat.metiers = null;
+    etat.metiersSupprimes = null;
     return etat;
   }
 
@@ -116,6 +118,16 @@
     }
     etat.scores = scores;                 // INTERNE — jamais rendu à l'écran
 
+    // Suppression directe : un métier directement représenté par une image REJETÉE est
+    // retiré des suggestions (retour séance Ophélia 2026-06-18 : cohérence perçue —
+    // « j'ai dit non à la boulangère, ne me propose pas boulanger »).
+    var metiersSupprimes = {};
+    etat.rejets.forEach(function (id) {
+      var carte = deckParId[id];
+      if (carte && carte.metier_lie) metiersSupprimes[carte.metier_lie] = true;
+    });
+    etat.metiersSupprimes = metiersSupprimes;
+
     // 2) Classement complet des dimensions : score desc, tie-break = ordre taxonomie.
     var classement = taxo.map(function (u) { return u.id; }).sort(function (a, b) {
       if (scores[b] !== scores[a]) return scores[b] - scores[a];
@@ -125,8 +137,8 @@
     var positifs = classement.filter(function (id) { return scores[id] > 0; });
     etat.universProfil = positifs.slice(0, cfg.MAX_UNIVERS);   // 1 à MAX_UNIVERS (pas de plancher imposé ; nb exact = OQ Ophélia, cf. 1.4 §313)
 
-    // 3) Métiers recoupés.
-    etat.metiers = selectionnerMetiers(etat, classement, etat.universProfil);
+    // 3) Métiers recoupés (en retirant les métiers supprimés par rejet direct).
+    etat.metiers = selectionnerMetiers(etat, classement, etat.universProfil, metiersSupprimes);
     return etat;
   }
 
@@ -136,15 +148,17 @@
     return n;
   }
 
-  function selectionnerMetiers(etat, classement, universProfil) {
+  function selectionnerMetiers(etat, classement, universProfil, supprimes) {
     var cfg = etat.config;
     var catalogue = etat.catalogueMetiers;
+    supprimes = supprimes || {};
 
     function selectionPour(universListe) {
       var universSet = {};
       universListe.forEach(function (u) { universSet[u] = true; });
       var retenus = [];
       catalogue.forEach(function (m, idx) {
+        if (supprimes[m.code_rome]) return;        // suppression directe (image rejetée)
         var n = nbRecoupements(m, universSet);
         if (n > 0) retenus.push({ metier: m, recoupements: n, ordre: idx });
       });

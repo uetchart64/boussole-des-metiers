@@ -114,7 +114,7 @@ Le moteur est testable hors navigateur. Exemple déroulé (cf. `00-moteur-data.m
 `img-01, img-19, img-04, img-20, img-13` :
 
 - **Univers du profil :** `concret-matiere`, `creation-idees`, `nature-plein-air` (3 univers).
-- **Métiers (6) :** Ébéniste · Boulanger·ère · Maraîcher·ère · Jardinier·ère paysagiste · Céramiste · Cuisinier·ère.
+- **Métiers (6) :** Ébéniste · Maraîcher.ère · Céramiste · Cuisinier.ère · Plombier.ère · Photographe. _(Boulanger.ère et Jardinier.ère sont **exclus** : leurs images — boulangerie, paysagisme — ont été rejetées → **suppression directe**, PE 2026-06-18.)_
 - **Déterministe** ✅ (mêmes likes ⇒ même résultat, quel que soit l'ordre de saisie).
 - Cas limites vérifiés : 0 like → message doux « Recommencer » ; 1 like → ≥ 3 métiers ; tout liké → 3 univers / 6 métiers (caps).
 
