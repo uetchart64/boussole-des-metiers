@@ -1,0 +1,13 @@
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.tmp
+.vscode/
+.idea/
+
+# Fichiers de diagnostic temporaires (générés pendant le debug — ne pas versionner)
+xshot.html
+xdiag.html
+__diag.html
